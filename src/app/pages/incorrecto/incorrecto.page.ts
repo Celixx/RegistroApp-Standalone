@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-incorrecto',
@@ -12,9 +13,14 @@ import { IonicModule } from '@ionic/angular';
 })
 export class IncorrectoPage implements OnInit {
 
-  constructor() { }
+  constructor(private activeroute: ActivatedRoute
+    , private router: Router) { }
 
   ngOnInit() {
+  }
+
+  public loginRedirect():void {
+    this.router.navigate(['/login'])
   }
 
 }

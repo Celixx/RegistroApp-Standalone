@@ -1,0 +1,17 @@
+.incorrecto{
+    display: flex;
+    justify-content: center;
+}
+
+ion-content.background{
+    --background: #fff url("../../../assets/images/fondo.jpg") no-repeat center center / cover;
+}
+
+.gray-opaque {
+    background-color: rgba(30,30,30,.9);
+    
+}
+
+.header {
+    display: flex;
+}

@@ -1,3 +1,55 @@
-<p>
-  mis-datos works!
-</p>
+<div>
+  <ion-card class="ion-padding gray-opaque">
+    <ion-router-outlet></ion-router-outlet>
+    <ion-card-title>Bienvenido NOMBRE USUARIO</ion-card-title>
+  </ion-card>
+  
+  <div class="flex-align-center">
+    <ion-card class="gray-opaque">
+      <ion-card-title class="ion-padding-horizontal ion-padding-vertical">Mis Datos</ion-card-title>
+  
+      <form>
+        <ion-card-content class="ion-text-center">
+          <!-- input Nombre -->
+          <ion-item>
+            <ion-input type="text" label="Nombre" labelPlacement="floating" name="nombre"></ion-input>
+          </ion-item>
+          <!-- Input Apellidos -->
+          <ion-item>
+            <ion-input type="text" label="Apellidos" labelPlacement="floating" name="apellidos"></ion-input>
+          </ion-item>
+          <!-- Input Correo -->
+          <ion-item>
+            <ion-input type="text" label="Correo" labelPlacement="floating" name="correo"></ion-input>
+          </ion-item>
+          <!-- Input Pregunta Secreta -->
+          <ion-item>
+            <ion-input type="text" label="Pregunta Secreta" labelPlacement="floating" name="preguntaSecreta"></ion-input>
+          </ion-item>
+          <!-- Input Respuesta -->
+          <ion-item>
+            <ion-input type="text" label="Respuesta Secreta" labelPlacement="floating" name="respuestaSecreta"></ion-input>
+          </ion-item>
+          <!-- Input contraseña -->
+          <ion-item>
+            <ion-input type="password" label="Contraseña" labelPlacement="floating" name="password"
+            placeholder="********"></ion-input>
+          </ion-item>
+          <!-- Input Repetir Contraseña -->
+          <ion-item>
+            <ion-input type="text" label="Repetir Contraseña" labelPlacement="floating" name="repetirContraseña"></ion-input>
+          </ion-item>
+          <!-- Boton ingresar -->
+          <ion-button size="small" color="warning" (click)="guardar()">
+            Guardar
+          </ion-button>
+          <!-- Boton cerrar sesion -->
+          <ion-button size="small" (click)="cerrarSesion()" fill="clear">
+            Cerrar sesión
+          </ion-button>
+        </ion-card-content>
+      </form>
+    </ion-card>
+  </div>
+</div>
+
