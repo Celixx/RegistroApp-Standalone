@@ -1,6 +1,12 @@
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
 
+.angular/
+android/
+node_modules/
+www/
+.vscode/
+
 *~
 *.sw[mnpcod]
 .tmp
