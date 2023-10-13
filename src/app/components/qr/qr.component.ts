@@ -34,7 +34,7 @@ export class QrComponent  implements OnInit {
   public escaneando = false;
   public asistencia: Asistencia = new Asistencia();
   public datosQR: string = '';
-  rescatado: Array<any>=[];
+  public rescatado: Array<any>=[];
 
   constructor(private activeroute: ActivatedRoute
     , private router: Router
@@ -62,22 +62,24 @@ export class QrComponent  implements OnInit {
   }
 
   ngOnInit() {
-
     this.rescatarUsuarioAutenticado();
   }
 
   async rescatarUsuarioAutenticado() {
-
-    this.rescatado.concat(await this.storage.leerUsuarioAutenticadoConPrivacidad());
-    console.log(this.rescatado);
-    this.usuario.setUsuario(this.rescatado[0].correo,
-                            this.rescatado[0].password,
-                            this.rescatado[0].nombre,
-                            this.rescatado[0].apellido,
-                            this.rescatado[0].preguntaSecreta,
-                            this.rescatado[0].respuestaSecreta,
-                            this.rescatado[0].sesionActiva,
-                            this.rescatado[0].hideSecrets);
+    const ayuda = await this.storage.leerUsuarioAutenticadoSinPrivacidad();
+    if(ayuda === null){
+      
+    }else{
+      this.usuario.setUsuario(ayuda.correo,
+        ayuda.password,
+        ayuda.nombre,
+        ayuda.apellido,
+        ayuda.preguntaSecreta,
+        ayuda.respuestaSecreta,
+        ayuda.sesionActiva,
+        false);
+        console.log(this.usuario);
+    }
                             
   }
 

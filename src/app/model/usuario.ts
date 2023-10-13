@@ -13,14 +13,14 @@ export class Usuario {
 
     constructor() { }
 
-    setUsuario(correo: string,
-        password: string,
-        nombre: string,
-        apellido: string,
-        preguntaSecreta: string,
-        respuestaSecreta: string,
-        sesionActiva: string,
-        hideSecrets: boolean)
+    setUsuario(correo: string = '',
+        password: string = '',
+        nombre: string = '',
+        apellido: string = '',
+        preguntaSecreta: string = '',
+        respuestaSecreta: string = '',
+        sesionActiva: string = '',
+        hideSecrets: boolean = false)
     {
         this.correo = correo;
         this.nombre = nombre;

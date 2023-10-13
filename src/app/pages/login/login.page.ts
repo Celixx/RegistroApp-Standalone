@@ -33,7 +33,6 @@ export class LoginPage implements OnInit {
   }
 
   public ngOnInit(): void {
-    console.log(this.usuario)
   }
 
   async ingresar() {
@@ -41,18 +40,15 @@ export class LoginPage implements OnInit {
     const validar: boolean = await this.usuario.validarUsuario(this.bd, this.usuario.correo, this.usuario.password);    
     
     if(validar) {
-      console.log('validado');
-      
-      this.rescatado.concat(await this.bd.leerUsuario(this.usuario.correo));
-      console.log(this.rescatado);
-      await this.storage.guardarUsuarioAutenticadoConPrivacidad(this.rescatado[0]);
+      const result = this.listaUsuarios.find((item) => item.correo === this.usuario.correo);
+      this.usuarioRescatado.setUsuario(result?.correo, result?.password, result?.nombre, result?.apellido, result?.preguntaSecreta, result?.respuestaSecreta, result?.sesionActiva, false);
+      await this.storage.guardarUsuarioAutenticadoConPrivacidad(this.usuarioRescatado);
 
       // Mensaje toast
       this.mostrarMensaje(`Inicio de sesión exitoso, Bienvenido(a) ${this.usuario.nombre} ${this.usuario.apellido}`);
       // Redirect
-      //this.router.navigate(['/home/qr']);
+      this.router.navigate(['/home/qr']);
     } else {
-      console.log('incorrecto');
       // Show an error message to the user
       this.mostrarMensaje('Credenciales incorrectas');
     }

@@ -10,6 +10,7 @@ import { Usuario } from 'src/app/model/usuario';
 import { NavigationExtras } from '@angular/router';
 import { Asistencia } from 'src/app/model/asistencia';
 import jsQR, { QRCode } from 'jsqr';
+import { StorageService } from 'src/app/services/storage.service';
 
 
 @Component({
@@ -37,7 +38,8 @@ export class HomePage {
   constructor(private activeroute: ActivatedRoute
   , private router: Router
   , private toastController: ToastController
-  , private animationController: AnimationController) {
+  , private animationController: AnimationController
+  , private storage: StorageService) {
 
     this.usuario = new Usuario();
 
@@ -151,6 +153,8 @@ export class HomePage {
   }
 
   public signOut(): void {
+    this.storage.eliminarUsuarioAutenticado();
+    
     this.router.navigate(['/login'])
   }
 
