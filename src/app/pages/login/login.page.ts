@@ -8,6 +8,7 @@ import { Router, NavigationExtras } from '@angular/router';
 import { DataBaseService } from '../../services/data-base.service';
 import { showAlertDUOC, showAlertYesNoDUOC } from '../../model/message';
 import { MessageEnum } from '../../model/message-enum';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
   selector: 'app-login',
@@ -20,12 +21,15 @@ import { MessageEnum } from '../../model/message-enum';
 export class LoginPage implements OnInit {
   listaUsuarios: Usuario[] = [];
   public usuario: Usuario;
+  public usuarioRescatado: Usuario;
+  rescatado: Array<Usuario>=[];
 
-  constructor(private router: Router, private toastController: ToastController, private bd: DataBaseService) {
+  constructor(private router: Router, private toastController: ToastController, private bd: DataBaseService, private storage: StorageService) {
     this.bd.listaUsuarios.subscribe(usuarios => {
       this.listaUsuarios = usuarios;
     })
     this.usuario = new Usuario();
+    this.usuarioRescatado = new Usuario();
   }
 
   public ngOnInit(): void {
@@ -33,35 +37,25 @@ export class LoginPage implements OnInit {
   }
 
   async ingresar() {
-    // Validación del usuario
-    // if (this.usuario) {
-    //   const mensajeError = this.usuario.validarUsuario();
-    //   if (mensajeError) {
-    //     this.mostrarMensaje(mensajeError);
-    //   }
-      // Búsqueda del usuario validado
-      console.log(this.usuario)
-      const validar: boolean = await this.usuario.validarUsuario(this.bd, this.usuario.correo, this.usuario.password);    
-      if(validar) {
-        console.log('validado');
-      }else{
-        
-        console.log('incorrecto');
-      }
-      // const usuarioLog: Usuario | undefined = this.usuario.buscarUsuarioValido(this.usuario.correo, this.usuario.password);
-
-      // if(usuarioLog){
-      //   const navigationExtras: NavigationExtras = {
-      //     state: {
-      //       usuario: usuarioLog
-      //     }
-      //   };
-      //   // Mensaje toast
-      //   this.mostrarMensaje(`Inicio de sesión exitoso, Bienvenido(a) ${usuarioLog.nombre} ${usuarioLog.apellido}`);
-      //   // Redirect
-      //   this.router.navigate(['/home/qr'],navigationExtras);
-      // }
+    // Assuming this.usuario is an instance of a user object
+    const validar: boolean = await this.usuario.validarUsuario(this.bd, this.usuario.correo, this.usuario.password);    
     
+    if(validar) {
+      console.log('validado');
+      
+      this.rescatado.concat(await this.bd.leerUsuario(this.usuario.correo));
+      console.log(this.rescatado);
+      await this.storage.guardarUsuarioAutenticadoConPrivacidad(this.rescatado[0]);
+
+      // Mensaje toast
+      this.mostrarMensaje(`Inicio de sesión exitoso, Bienvenido(a) ${this.usuario.nombre} ${this.usuario.apellido}`);
+      // Redirect
+      //this.router.navigate(['/home/qr']);
+    } else {
+      console.log('incorrecto');
+      // Show an error message to the user
+      this.mostrarMensaje('Credenciales incorrectas');
+    }
   }
 
   public recuperar(): void {

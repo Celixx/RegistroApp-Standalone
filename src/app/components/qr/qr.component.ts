@@ -11,6 +11,7 @@ import { NavigationExtras } from '@angular/router';
 import { Asistencia } from 'src/app/model/asistencia';
 import jsQR, { QRCode } from 'jsqr';
 import { HomePage } from 'src/app/pages/home/home.page';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
   selector: 'app-qr',
@@ -33,14 +34,17 @@ export class QrComponent  implements OnInit {
   public escaneando = false;
   public asistencia: Asistencia = new Asistencia();
   public datosQR: string = '';
+  rescatado: Array<any>=[];
 
   constructor(private activeroute: ActivatedRoute
     , private router: Router
     , private toastController: ToastController
     , private animationController: AnimationController
-    , private homePage: HomePage) { 
+    , private homePage: HomePage
+    , private storage: StorageService) { 
 
     this.usuario = new Usuario();
+    
 
     this.activeroute.queryParams.subscribe(params => { 
 
@@ -57,7 +61,26 @@ export class QrComponent  implements OnInit {
 
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+
+    this.rescatarUsuarioAutenticado();
+  }
+
+  async rescatarUsuarioAutenticado() {
+
+    this.rescatado.concat(await this.storage.leerUsuarioAutenticadoConPrivacidad());
+    console.log(this.rescatado);
+    this.usuario.setUsuario(this.rescatado[0].correo,
+                            this.rescatado[0].password,
+                            this.rescatado[0].nombre,
+                            this.rescatado[0].apellido,
+                            this.rescatado[0].preguntaSecreta,
+                            this.rescatado[0].respuestaSecreta,
+                            this.rescatado[0].sesionActiva,
+                            this.rescatado[0].hideSecrets);
+                            
+  }
+
 
   public miClaseRedirect(): void {
     const navigationExtras: NavigationExtras = {
