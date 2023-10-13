@@ -20,7 +20,7 @@ export class CorreoPage implements OnInit {
 
   constructor(private router: Router, private toastController: ToastController) {
     this.correo = "";
-    this.usuario = new Usuario('', '', '', '', '', '', 0, null);
+    this.usuario = new Usuario();
    }
 
   ngOnInit() {
@@ -30,21 +30,21 @@ export class CorreoPage implements OnInit {
   public Recuperar (): void{
     
     
-    const usuarioRecuperado: Usuario | undefined = this.usuario.buscarUsuarioCorreo(this.correo);
+    // const usuarioRecuperado: Usuario | undefined = this.usuario.buscarUsuarioCorreo(this.correo);
 
-    if (usuarioRecuperado?.correo === this.correo){
+    // if (usuarioRecuperado?.correo === this.correo){
       
-      const navigationExtras: NavigationExtras = {
-        state: {
-          usuario: usuarioRecuperado 
-        }
+    //   const navigationExtras: NavigationExtras = {
+    //     state: {
+    //       usuario: usuarioRecuperado 
+    //     }
         
-      };
+    //   };
       
-      this.router.navigate(['/pregunta'],navigationExtras);
-    } else {
-      this.router.navigate(['/incorrecto']);
-    }
+    //   this.router.navigate(['/pregunta'],navigationExtras);
+    // } else {
+    //   this.router.navigate(['/incorrecto']);
+    // }
 
     
   }

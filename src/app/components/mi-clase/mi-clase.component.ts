@@ -25,7 +25,7 @@ export class MiClaseComponent implements OnInit {
     , private router: Router
     , private toastController: ToastController
     , private animationController: AnimationController) {
-    this.usuario = new Usuario('', '', '', '', '', '', 0, null);
+    this.usuario = new Usuario();
 
     this.activeroute.queryParams.subscribe(params => {
 

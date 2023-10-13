@@ -18,7 +18,7 @@ export class CorrectoPage implements OnInit {
 
   constructor(private activeroute: ActivatedRoute
     , private router: Router) {
-    this.usuario = new Usuario('', '', '', '', '', '', 0, null);
+    this.usuario = new Usuario();
     this.activeroute.queryParams.subscribe(params => { 
 
       const nav = this.router.getCurrentNavigation();

@@ -22,7 +22,7 @@ export class PreguntaPage implements OnInit {
   constructor(private activeroute: ActivatedRoute
     , private router: Router, private toastController: ToastController) { 
 
-      this.usuario = new Usuario('', '', '', '', '', '', 0, null);
+      this.usuario = new Usuario();
       this.respuesta = ""
       this.activeroute.queryParams.subscribe(params => { 
 

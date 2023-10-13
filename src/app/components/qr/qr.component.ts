@@ -40,7 +40,7 @@ export class QrComponent  implements OnInit {
     , private animationController: AnimationController
     , private homePage: HomePage) { 
 
-    this.usuario = new Usuario('', '', '', '', '', '', 0, null);
+    this.usuario = new Usuario();
 
     this.activeroute.queryParams.subscribe(params => { 
 
