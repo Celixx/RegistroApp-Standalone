@@ -46,13 +46,11 @@ export class DataBaseService {
 
   async inicializarBaseDeDatos() {
     
-    // Crear base de datos SQLite
     await this.sqliteService.crearBaseDeDatos({
       database: this.nombreBaseDatos,
       upgrade: this.userUpgrades
     });
 
-    // Abrir base de datos
     try {
       this.db = await this.sqliteService.abrirBaseDeDatos(
         this.nombreBaseDatos,
@@ -65,15 +63,7 @@ export class DataBaseService {
       showAlertError('inicializarBaseDeDatos', err);
     };
 
-    // Creación usuarios de prueba
-    this.crearUsuario(this.usuarioTest1);
-    this.crearUsuario(this.usuarioTest2);
-    this.crearUsuario(this.usuarioTest3);
-
-    // Respaldar el nombre y versión de la base de datos
     this.dbVerService.set(this.nombreBaseDatos, 1);
-
-    // Cargar la lista de usuarios
     await this.leerUsuarios();
   }
 

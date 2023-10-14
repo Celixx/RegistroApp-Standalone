@@ -1,49 +1,54 @@
-<ion-card class="gray-opaque">
-  <ion-grid fixed>
-    <ion-row>
-      <ion-col class="ion-text-center">
-        <h1>Datos de la asignatura</h1>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col class="contentDatos">Sede: </ion-col>
-      <ion-col class="contentDatos">{{ asistencia.sede }}</ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col class="contentDatos">Sigla: </ion-col>
-      <ion-col class="contentDatos">{{ asistencia.idAsignatura }}</ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col class="contentDatos">Sección: </ion-col>
-      <ion-col class="contentDatos">{{ asistencia.seccion }}</ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col class="contentDatos">Nombre de la asignatura: </ion-col>
-      <ion-col class="contentDatos">{{ asistencia.nombreAsignatura }}</ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col class="contentDatos">Nombre profesor: </ion-col>
-      <ion-col class="contentDatos">{{ asistencia.nombreProfesor }}</ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col class="contentDatos">Día: </ion-col>
-      <ion-col class="contentDatos">{{ asistencia.dia }}</ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col class="contentDatos">Bloque de inicio: </ion-col>
-      <ion-col class="contentDatos">{{ asistencia.bloqueInicio }}</ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col class="contentDatos">Bloque de término: </ion-col>
-      <ion-col class="contentDatos">{{ asistencia.bloqueTermino }}</ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col class="contentDatos">Hora de inicio: </ion-col>
-      <ion-col class="contentDatos">{{ asistencia.horaInicio }}</ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col class="contentDatos">Hora de término: </ion-col>
-      <ion-col class="contentDatos">{{ asistencia.horaFin }}</ion-col>
-    </ion-row>
-  </ion-grid>
-</ion-card>
+<ion-content>
+  <div class="background-image"></div>
+  <div class="content">
+    <ion-card class="gray-opaque">
+      <ion-grid fixed>
+        <ion-row>
+          <ion-col class="ion-text-center">
+            <h1>Datos de la asignatura</h1>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="contentDatos">Sede: </ion-col>
+          <ion-col class="contentDatos">{{ asistencia.sede }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="contentDatos">Sigla: </ion-col>
+          <ion-col class="contentDatos">{{ asistencia.idAsignatura }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="contentDatos">Sección: </ion-col>
+          <ion-col class="contentDatos">{{ asistencia.seccion }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="contentDatos">Nombre de la asignatura: </ion-col>
+          <ion-col class="contentDatos">{{ asistencia.nombreAsignatura }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="contentDatos">Nombre profesor: </ion-col>
+          <ion-col class="contentDatos">{{ asistencia.nombreProfesor }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="contentDatos">Día: </ion-col>
+          <ion-col class="contentDatos">{{ asistencia.dia }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="contentDatos">Bloque de inicio: </ion-col>
+          <ion-col class="contentDatos">{{ asistencia.bloqueInicio }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="contentDatos">Bloque de término: </ion-col>
+          <ion-col class="contentDatos">{{ asistencia.bloqueTermino }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="contentDatos">Hora de inicio: </ion-col>
+          <ion-col class="contentDatos">{{ asistencia.horaInicio }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="contentDatos">Hora de término: </ion-col>
+          <ion-col class="contentDatos">{{ asistencia.horaFin }}</ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+  </div>
+</ion-content>

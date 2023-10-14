@@ -1,22 +1,27 @@
-<div>
-  <ion-card class="ion-padding gray-opaque">
-    <ion-router-outlet></ion-router-outlet>
-    <ion-card-title>Bienvenido {{ usuario.nombre }}</ion-card-title>
-    <ion-card-title>Escanea el código QR <br> para registrar tu asistencia a clases</ion-card-title>
-  </ion-card>
-  
-  <ion-card class="ion-padding gray-opaque">
-    <ion-button color="warning" class="botonQR" *ngIf="!escaneando" (click)="scanQR()" fill="clear" shape="square">
-      <ion-icon slot="start" name="videocam-outline"></ion-icon>
-      Escanear QR
-    </ion-button>
-  
-    <ion-button color="warning" class="botonQR" *ngIf="escaneando" (click)="stopScanQR()" fill="clear" shape="square">
-      <ion-icon slot="start" name="stop-circle-outline"></ion-icon>
-      Detener escaneo
-    </ion-button>
-  
-    <video #video [hidden]="!escaneando" width="100%"></video>
-    <canvas #canvas hidden></canvas> 
-  </ion-card>
-</div>
+<ion-content>
+  <div class="background-image"></div>
+  <div class="content">
+    <div>
+      <ion-card class="ion-padding gray-opaque">
+        <ion-router-outlet></ion-router-outlet>
+        <ion-card-title>Bienvenido {{ usuario.nombre }}</ion-card-title>
+        <ion-card-title>Escanea el código QR <br> para registrar tu asistencia a clases</ion-card-title>
+      </ion-card>
+      
+      <ion-card class="ion-padding gray-opaque">
+        <ion-button color="warning" class="botonQR" *ngIf="!escaneando" (click)="scanQR()" fill="clear" shape="square">
+          <ion-icon slot="start" name="videocam-outline"></ion-icon>
+          Escanear QR
+        </ion-button>
+      
+        <ion-button color="warning" class="botonQR" *ngIf="escaneando" (click)="stopScanQR()" fill="clear" shape="square">
+          <ion-icon slot="start" name="stop-circle-outline"></ion-icon>
+          Detener escaneo
+        </ion-button>
+      
+        <video #video [hidden]="!escaneando" width="100%"></video>
+        <canvas #canvas hidden></canvas> 
+      </ion-card>
+    </div>
+  </div>
+</ion-content>

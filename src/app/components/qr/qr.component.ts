@@ -78,7 +78,6 @@ export class QrComponent  implements OnInit {
         ayuda.respuestaSecreta,
         ayuda.sesionActiva,
         false);
-        console.log(this.usuario);
     }
                             
   }

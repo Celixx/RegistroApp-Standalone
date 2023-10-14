@@ -30,12 +30,12 @@
           <!-- input correo -->
           <ion-item>
             <ion-input type="text" label="Correo Institucional" labelPlacement="floating" name="correo"
-              [(ngModel)]="usuario.correo" placeholder="cgonzalez@duocuc.cl"></ion-input>
+              [(ngModel)]="inputCorreo" placeholder="cgonzalez@duocuc.cl"></ion-input>
           </ion-item>
           <!-- Input contraseña -->
           <ion-item>
             <ion-input type="password" label="Contraseña" labelPlacement="floating" name="password"
-              [(ngModel)]="usuario.password" placeholder="********"></ion-input>
+              [(ngModel)]="inputPassword" placeholder="********"></ion-input>
           </ion-item>
           <!-- Boton ingresar -->
           <ion-button color="warning" (click)="ingresar()" shape="block">

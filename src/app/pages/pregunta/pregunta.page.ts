@@ -33,7 +33,7 @@ export class PreguntaPage implements OnInit {
             return;
           }
         }
-        this.router.navigate(['/login']); 
+        // this.router.navigate(['/login']); 
       });
       
     }
@@ -81,5 +81,8 @@ export class PreguntaPage implements OnInit {
       
   } 
 
+  public volverIniciar() {
+    this.router.navigate(['/login'])
+  }
   
 }

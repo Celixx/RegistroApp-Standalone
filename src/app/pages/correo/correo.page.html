@@ -35,7 +35,7 @@
         <ion-card-content>
 
           <ion-item>
-            <ion-input name="correo" label="Correo" labelPlacement="floating" [(ngModel)]="correo"
+            <ion-input name="correo" label="Correo" labelPlacement="floating" [(ngModel)]="usuario.correo"
               type="text"></ion-input>
           </ion-item>
 
@@ -48,10 +48,9 @@
 
       </form>
 
-      <ion-label>
-        <br>
-        <a routerLink="">Iniciar sesión</a>
-      </ion-label>
+      <ion-button (click)="volverIniciar()" fill="clear" shape="round">
+        Iniciar sesión
+      </ion-button>
     </ion-card>
   </div>
 

@@ -1,66 +1,72 @@
-<ion-card class="ion-padding gray-opaque">
-  <ion-card-title>Foro</ion-card-title>
+<ion-content>
 
-  <form>
-
-    <!-- Publicador -->
-    <ion-list>
+  <div class="background-image"></div>
+  <div class="content">
+    <ion-card class="ion-padding gray-opaque">
+      <ion-card-title>Foro</ion-card-title>
+    
+      <form>
+    
+        <!-- Publicador -->
+        <ion-list>
+          <ion-item>
+            <ion-select placeholder="Selecciona tu usuario" [(ngModel)]="selectedUserId" (ngModelChange)="cambiarUsuario($event)" [ngModelOptions]="{standalone: true}">
+              <div slot="label">Publicador</div>
+              <ion-select-option *ngFor="let u of usuarios" [value]="u.id">{{ u.name }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-list>
+      </form>
+    
+      <ion-card-title>Ingresa tu publicación</ion-card-title>
+    
+        <!-- Input Título -->
       <ion-item>
-        <ion-select placeholder="Selecciona tu usuario" [(ngModel)]="selectedUserId" (ngModelChange)="cambiarUsuario($event)" [ngModelOptions]="{standalone: true}">
-          <div slot="label">Publicador</div>
-          <ion-select-option *ngFor="let u of usuarios" [value]="u.id">{{ u.name }}</ion-select-option>
-        </ion-select>
+        <ion-input type="text" label="Título" name="titulo" placeholder="Escriba aquí" [(ngModel)] = "publicacion.title"></ion-input>
       </ion-item>
-    </ion-list>
-  </form>
-
-  <ion-card-title>Ingresa tu publicación</ion-card-title>
-
-    <!-- Input Título -->
-  <ion-item>
-    <ion-input type="text" label="Título" name="titulo" placeholder="Escriba aquí" [(ngModel)] = "publicacion.title"></ion-input>
-  </ion-item>
-
-  <!-- Input Cuerpo -->
-  <ion-item>
-    <ion-textarea label="Cuerpo" placeholder="Escriba aquí" [(ngModel)]="publicacion.body"></ion-textarea>
-  </ion-item>
-  
-  <!-- Botones -->
-  <div>
-    <!-- Boton Limpiar -->
-    <ion-button size="small" (click)="limpiarPublicacion()" fill="clear">
-      Limpiar
-    </ion-button>
-    <!-- Boton Publciar -->
-    <ion-button size="small" color="warning" (click)="guardarPublicacion()">
-      Publicar
-    </ion-button>
-  </div>
-
-  <ion-card-title>Publicaciones recientes</ion-card-title>
-
-  <ion-card style="background-color: rgba(0, 33, 56, 0.35);" *ngFor="let p of publicaciones; let i=index; trackBy: getIdentificadorItemPublicacion">
-
-    <ion-card-header>
-      <h6>(Publicación #{{p.id}}) {{p.name}}</h6>
-      <h1>{{p.title}}</h1>
-    </ion-card-header>
-  
-    <ion-card-content>
-      {{p.body}}
-    </ion-card-content>
-
-    <ion-button color="warning" shape="round" size="small" (click)="editarPublicacion(p)">
-      Editar
-      <ion-icon slot="icon-only" name="create-outline"></ion-icon>
-    </ion-button>
-
-    <ion-button color="danger" shape="round" size="small" (click)="eliminarPublicacion(p)">
-      Eliminar
-      <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-    </ion-button>
-
-  </ion-card>
-
-</ion-card>
+    
+      <!-- Input Cuerpo -->
+      <ion-item>
+        <ion-textarea label="Cuerpo" placeholder="Escriba aquí" [(ngModel)]="publicacion.body"></ion-textarea>
+      </ion-item>
+      
+      <!-- Botones -->
+      <div>
+        <!-- Boton Limpiar -->
+        <ion-button size="small" (click)="limpiarPublicacion()" fill="clear">
+          Limpiar
+        </ion-button>
+        <!-- Boton Publciar -->
+        <ion-button size="small" color="warning" (click)="guardarPublicacion()">
+          Publicar
+        </ion-button>
+      </div>
+    
+      <ion-card-title>Publicaciones recientes</ion-card-title>
+    
+      <ion-card style="background-color: rgba(0, 33, 56, 0.35);" *ngFor="let p of publicaciones; let i=index; trackBy: getIdentificadorItemPublicacion">
+    
+        <ion-card-header>
+          <h6>(Publicación #{{p.id}}) {{p.name}}</h6>
+          <h1>{{p.title}}</h1>
+        </ion-card-header>
+      
+        <ion-card-content>
+          {{p.body}}
+        </ion-card-content>
+    
+        <ion-button color="warning" shape="round" size="small" (click)="editarPublicacion(p)">
+          Editar
+          <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+        </ion-button>
+    
+        <ion-button color="danger" shape="round" size="small" (click)="eliminarPublicacion(p)">
+          Eliminar
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+    
+      </ion-card>
+    
+    </ion-card>
+  </div> 
+</ion-content>
