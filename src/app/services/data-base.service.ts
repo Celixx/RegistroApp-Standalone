@@ -1,7 +1,6 @@
 import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { Injectable} from '@angular/core';
 import { SQLiteService } from './sqlite.service';
-import { DbnameVersionService } from './dbname-version.service';
 import { Usuario } from '../model/usuario';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { showAlert, showAlertDUOC, showAlertError } from '../model/message';
@@ -9,11 +8,7 @@ import { showAlert, showAlertDUOC, showAlertError } from '../model/message';
 @Injectable()
 export class DataBaseService {
 
-  public usuarioTest1: Usuario;
-  public usuarioTest2: Usuario;
-  public usuarioTest3: Usuario;
-
-  private userUpgrades = [
+  userUpgrades = [
     {
       toVersion: 1,
       statements: [`
@@ -30,97 +25,88 @@ export class DataBaseService {
     }
   ]
 
-  public listaUsuarios: BehaviorSubject<Usuario[]> = new BehaviorSubject<Usuario[]>([]);
-  private nombreBaseDatos = 'basedatos';
-  private db!: SQLiteDBConnection;
-  private estaListoUsuario: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  nombreBD = 'basedatos';
+  db!: SQLiteDBConnection;
+  listaUsuarios: BehaviorSubject<Usuario[]> = new BehaviorSubject<Usuario[]>([]);
+  listaUsuariosFueActualizada: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  constructor(private sqliteService: SQLiteService, private dbVerService: DbnameVersionService) {
-    this.usuarioTest1 = new Usuario();
-    this.usuarioTest1.setUsuario('atorres@duocuc.cl', '1234', 'Ana', 'Torres', '¿Cuál es tu animal favorito?', 'gato', 'no', false);
-    this.usuarioTest2 = new Usuario();
-    this.usuarioTest2.setUsuario('jperez@duocuc.cl', '5678', 'Juan', 'Pérez', '¿Cuál es tu postre favorito?', 'panqueques', 'no', false);
-    this.usuarioTest3 = new Usuario();
-    this.usuarioTest3.setUsuario('cmujica@duocuc.cl', '0987', 'Carla', 'Mujica', '¿Cuál es tu vehículo favorito?', 'moto', 'no', false);
-  }
+  constructor(private sqliteService: SQLiteService) { }
 
   async inicializarBaseDeDatos() {
-    
-    await this.sqliteService.crearBaseDeDatos({
-      database: this.nombreBaseDatos,
-      upgrade: this.userUpgrades
-    });
 
-    try {
-      this.db = await this.sqliteService.abrirBaseDeDatos(
-        this.nombreBaseDatos,
-        false,
-        'no-encryption',
-        1,
-        false
-      );
-    } catch(err: any) {
-      showAlertError('inicializarBaseDeDatos', err);
-    };
+    // Crear base de datos SQLite
+    await this.sqliteService.crearBaseDeDatos({database: this.nombreBD, upgrade: this.userUpgrades});
 
-    this.dbVerService.set(this.nombreBaseDatos, 1);
+    // Abrir base de datos
+    this.db = await this.sqliteService.abrirBaseDeDatos(this.nombreBD, false, 'no-encryption', 1, false);
+
+    // Para crear usuarios de prueba descomenta la siguiente línea
+    await this.crearUsuariosDePrueba();
+
+    // Cargar la lista de usuarios
     await this.leerUsuarios();
   }
 
-  usuariosFueronCargados() {
-    return this.estaListoUsuario.asObservable();
+  async crearUsuariosDePrueba() {
+    const usu = new Usuario();
+    usu.setUsuario('atorres@duocuc.cl', '1234', 'Ana', 'Torres', 'Nombre de mi mascota', 'gato', 'N', false);
+    await this.guardarUsuario(usu);
+    usu.setUsuario('jperez@duocuc.cl', '5678', 'Juan', 'Pérez', '¿Cuál es tu postre favorito?', 'panqueques', 'N', false);
+    await this.guardarUsuario(usu);
+    usu.setUsuario('cmujica@duocuc.cl', '0987', 'Carla', 'Mujica', '¿Cuál es tu vehículo favorito?', 'moto', 'N', false);
+    await this.guardarUsuario(usu);
   }
 
-  notificarUsuarios$(): Observable<Usuario[]> {
-    return this.listaUsuarios.asObservable();
+  // Create y Update del CRUD. La creación y actualización de un usuario
+  // se realizarán con el mismo método, ya que la instrucción "INSERT OR REPLACE"
+  // revisa la clave primaria y si el registro es nuevo entonces lo inserta,
+  // pero si el registro ya existe, entonces los actualiza.
+  
+  async guardarUsuario(usuario: Usuario) {
+    const sql = 'INSERT OR REPLACE INTO USUARIO (correo, password, nombre, apellido, ' +
+      'preguntaSecreta, respuestaSecreta, sesionActiva) VALUES (?,?,?,?,?,?,?);';
+    await this.db.run(sql, [usuario.correo, usuario.password, usuario.nombre, usuario.apellido, 
+      usuario.preguntaSecreta, usuario.respuestaSecreta, usuario.sesionActiva]);
+    await this.leerUsuarios();
   }
 
-  async cargarUsuarios() {
-    const users: Usuario[]= (await this.db.query('SELECT * FROM USUARIO;')).values as Usuario[];
-    this.listaUsuarios.next(users);
-  }
+  // Cada vez que se ejecute leerUsuario() la aplicación va a cargar los usuarios desde la base de datos,
+  // y por medio de la instrucción "this.listaUsuarios.next(usuarios);" le va a notificar a todos los programas
+  // que se subscribieron a la propiedad "listaUsuarios", que la tabla de usuarios se acaba de cargar. De esta
+  // forma los programas subscritos a la variable listaUsuarios van a forzar la actualización de sus páginas HTML.
 
-  async leerUsuario(correo: string) {
-    const users: Usuario[]= (await this.db.query(`SELECT * FROM USUARIO WHERE correo='${correo}';`)).values as Usuario[];
-    return users[0];
-  }
-
+  // ReadAll del CRUD. Si existen registros entonces convierte los registros en una lista de usuarios
+  // con la instrucción ".values as Usuario[];". Si la tabla no tiene registros.
   async leerUsuarios() {
-    await this.cargarUsuarios();
-    this.estaListoUsuario.next(true);
+    const usuarios: Usuario[]= (await this.db.query('SELECT * FROM USUARIO;')).values as Usuario[];
+    this.listaUsuarios.next(usuarios);
+    this.listaUsuariosFueActualizada.next(true);
   }
 
-  async crearUsuario(usuario: Usuario) {
-    try {
-      const sql = `INSERT INTO USUARIO (correo, password, nombre, apellido, preguntaSecreta, respuestaSecreta, sesionActiva) VALUES (?,?,?,?,?,?,?);`;
-      await this.db.run(sql, [
-        usuario.correo,
-        usuario.password,
-        usuario.nombre,
-        usuario.apellido,
-        usuario.preguntaSecreta,
-        usuario.respuestaSecreta,
-        usuario.sesionActiva
-      ]);
-      await this.leerUsuarios();
-    } catch(err) {
-      console.log(err);
-    }
+  // Read del CRUD
+  async leerUsuario(correo: string): Promise<Usuario | undefined> {
+    const usuarios: Usuario[]= (await this.db.query('SELECT * FROM USUARIO WHERE correo=?;', [correo])).values as Usuario[];
+    return usuarios[0];
   }
 
-  async actualizarUsuarioPorCorreo(correo: string, sesionActiva: string) {
-    const sql = `UPDATE USUARIO SET sesionActiva=${sesionActiva} WHERE correo='${correo}'`;
-    await this.db.run(sql);
+  // Delete del CRUD
+  async eliminarUsuarioUsandoCorreo(correo: string) {
+    const sql = 'DELETE FROM USUARIO WHERE correo=?';
+    await this.db.run(sql, [correo]);
     await this.leerUsuarios();
   }
 
-  async eliminarUsuarioPorCorreo(correo: string) {
-    const sql = `DELETE FROM USUARIO WHERE correo='${correo}'`;
-    await this.db.run(sql);
+  // Validar usuario
+  async validarUsuario(correo: string, password: string): Promise<Usuario | undefined> {
+    const usuarios: Usuario[]= (await this.db.query('SELECT * FROM USUARIO WHERE correo=? AND password=?;',
+      [correo, password])).values as Usuario[];
+    return usuarios[0];
+  }
+
+  // Actualizar sesión activa
+  async actualizarSesionActiva(correo: string, sesionActiva: string) {
+    const sql = 'UPDATE USUARIO SET sesionActiva=? WHERE correo=?';
+    await this.db.run(sql, [sesionActiva, correo]);
     await this.leerUsuarios();
   }
 }
-function err(reason: any): SQLiteDBConnection | PromiseLike<SQLiteDBConnection> {
-  throw new Error('Function not implemented.');
-}
-

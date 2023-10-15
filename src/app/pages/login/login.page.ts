@@ -9,6 +9,7 @@ import { DataBaseService } from '../../services/data-base.service';
 import { showAlertDUOC, showAlertYesNoDUOC } from '../../model/message';
 import { MessageEnum } from '../../model/message-enum';
 import { StorageService } from 'src/app/services/storage.service';
+import { AuthService } from 'src/app/services/auth-guard.service';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +27,7 @@ export class LoginPage implements OnInit {
   public inputPassword: string = "";
   rescatado: Array<Usuario>=[];
 
-  constructor(private router: Router, private toastController: ToastController, private bd: DataBaseService, private storage: StorageService) {
+  constructor(private router: Router, private toastController: ToastController, private bd: DataBaseService, private storage: StorageService, private authGuard: AuthService) {
     this.bd.listaUsuarios.subscribe(usuarios => {
       this.listaUsuarios = usuarios;
     })
@@ -38,30 +39,7 @@ export class LoginPage implements OnInit {
   }
 
   async ingresar() {
-    // Assuming this.usuario is an instance of a user object
-    const validar: boolean = await this.usuario.validarUsuario(this.bd, this.inputCorreo, this.inputPassword);    
-    if(validar) {
-
-  
-
-      const result = this.listaUsuarios.find((item) => item.correo === this.usuario.correo);
-
-
-      if(result?.correo === this.inputCorreo && result.password === this.inputPassword){
-        this.usuarioRescatado.setUsuario(result?.correo, result?.password, result?.nombre, result?.apellido, result?.preguntaSecreta, result?.respuestaSecreta, result?.sesionActiva, false);
-        await this.storage.guardarUsuarioAutenticadoConPrivacidad(this.usuarioRescatado);
-
-        // Mensaje toast
-        this.mostrarMensaje(`Inicio de sesión exitoso, Bienvenido(a) ${this.usuario.nombre} ${this.usuario.apellido}`);
-        // Redirect
-        this.router.navigate(['/home/qr']);
-      }else{
-        this.mostrarMensaje('Credenciales incorrectas');
-      }
-    } else {
-      // Show an error message to the user
-      this.mostrarMensaje('Credenciales incorrectas');
-    }
+    this.authGuard.login(this.inputCorreo, this.inputPassword)
   }
 
   public recuperar(): void {

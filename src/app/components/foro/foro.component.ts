@@ -4,6 +4,10 @@ import { ApiclientService } from 'src/app/services/apiclient.service';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from 'src/app/services/auth-guard.service';
+import { DataBaseService } from 'src/app/services/data-base.service';
+import { Usuario } from '../../model/usuario'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-foro',
@@ -26,13 +30,36 @@ export class ForoComponent  implements OnInit {
   publicaciones: Array<any> = [];
   publicacionSeleccionada: any;
 
+  listaUsuarios: Usuario[] = [];
+  public usuario: Usuario | undefined;
+
   constructor(
     private api: ApiclientService,
-    private toastController: ToastController) { }
+    private toastController: ToastController,
+    private authGuard: AuthService,
+    private bd: DataBaseService,
+    private router: Router) { }
     
   ngOnInit() {}
 
   ionViewWillEnter() {
+
+    const userAuth = this.authGuard.leerUsuarioAutenticado();
+    console.log(userAuth);
+
+    this.authGuard.leerUsuarioAutenticado().then((usuario: Usuario | undefined) => {
+      if (usuario) {
+        this.bd.listaUsuarios.subscribe(usuarios => {
+          this.listaUsuarios = usuarios;
+        });
+        this.authGuard.leerUsuarioAutenticado().then((usuario) => {
+          this.usuario = usuario;
+        })
+      } else {
+        this.router.navigate(['login'])
+      }
+    });
+
     this.selectedUserId = null;
     this.setPublicacion(null, null, '', '', '');
     this.getUsuarios();

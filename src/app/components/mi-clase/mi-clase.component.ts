@@ -8,6 +8,8 @@ import { AnimationController } from '@ionic/angular';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from 'src/app/services/auth-guard.service';
+import { DataBaseService } from 'src/app/services/data-base.service';
 
 @Component({
   selector: 'app-mi-clase',
@@ -18,13 +20,16 @@ import { FormsModule } from '@angular/forms';
 })
 export class MiClaseComponent implements OnInit {
 
-  public usuario: Usuario;
   public asistencia: Asistencia = new Asistencia();
+  listaUsuarios: Usuario[] = [];
+  public usuario: Usuario | undefined;
 
   constructor(private activeroute: ActivatedRoute
     , private router: Router
     , private toastController: ToastController
-    , private animationController: AnimationController) {
+    , private animationController: AnimationController
+    , private authGuard: AuthService
+    , private bd : DataBaseService) {
     this.usuario = new Usuario();
 
     this.activeroute.queryParams.subscribe(params => {
@@ -39,6 +44,24 @@ export class MiClaseComponent implements OnInit {
       }
       // this.router.navigate(['/login']);
 
+    });
+  }
+
+  ionViewWillEnter(): void {
+    const userAuth = this.authGuard.leerUsuarioAutenticado();
+    console.log(userAuth);
+
+    this.authGuard.leerUsuarioAutenticado().then((usuario: Usuario | undefined) => {
+      if (usuario) {
+        this.bd.listaUsuarios.subscribe(usuarios => {
+          this.listaUsuarios = usuarios;
+        });
+        this.authGuard.leerUsuarioAutenticado().then((usuario) => {
+          this.usuario = usuario;
+        })
+      } else {
+        this.router.navigate(['login'])
+      }
     });
   }
 

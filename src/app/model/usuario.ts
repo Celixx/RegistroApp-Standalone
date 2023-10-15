@@ -1,5 +1,5 @@
 import { DataBaseService } from '../services/data-base.service';
-import { showAlertDUOC } from "../model/message";
+import { showAlertDUOC } from "./message";
 
 export class Usuario {
 
@@ -13,14 +13,14 @@ export class Usuario {
 
     constructor() { }
 
-    setUsuario(correo: string = '',
-        password: string = '',
-        nombre: string = '',
-        apellido: string = '',
-        preguntaSecreta: string = '',
-        respuestaSecreta: string = '',
-        sesionActiva: string = '',
-        hideSecrets: boolean = false)
+    setUsuario(correo: string,
+        password: string,
+        nombre: string,
+        apellido: string,
+        preguntaSecreta: string,
+        respuestaSecreta: string,
+        sesionActiva: string,
+        hideSecrets: boolean)
     {
         this.correo = correo;
         this.nombre = nombre;
@@ -36,6 +36,11 @@ export class Usuario {
           this.preguntaSecreta = preguntaSecreta;
           this.respuestaSecreta = respuestaSecreta;
         }
+    }
+
+    getDatosUsuario() {
+      return [this.correo, this.password, this.nombre, this.apellido, this.preguntaSecreta,
+        this.respuestaSecreta, this.sesionActiva];
     }
 
     validarCorreo(correo: string): string {
@@ -78,7 +83,7 @@ export class Usuario {
         || this.validarRespuestaSecreta(respuestaSecreta)
     }
 
-    async validarUsuario(storageService: DataBaseService, correo: string, password: string): Promise<boolean> {
+    async validarUsuario(bd: DataBaseService, correo: string, password: string): Promise<boolean> {
       return new Promise(async (resolve) => {
         let msg = this.validarCorreo(correo);
         if (msg) {
@@ -91,19 +96,20 @@ export class Usuario {
           return resolve(false);
         }
         //const usu = await db.leerUsuario(correo, password, true);
-        const usu = await storageService.leerUsuario(correo);
-        if (usu === null) {
+        const usu = await bd.leerUsuario(correo);
+        if (usu) {
+          this.correo = usu.correo;
+          this.nombre = usu.nombre;
+          this.apellido = usu.apellido;
+          this.sesionActiva = usu.sesionActiva;
+          this.password = usu.password;
+          this.preguntaSecreta = usu.preguntaSecreta;
+          this.respuestaSecreta = usu.respuestaSecreta;
+          return resolve(true);
+        } else {
           await showAlertDUOC('El correo o la contraseña no son correctos');
           return resolve(false);
         }
-        this.correo = usu.correo;
-        this.nombre = usu.nombre;
-        this.apellido = usu.apellido;
-        this.sesionActiva = usu.sesionActiva;
-        this.password = usu.password;
-        this.preguntaSecreta = usu.preguntaSecreta;
-        this.respuestaSecreta = usu.respuestaSecreta;
-        return resolve(true);
       });
     }
   }

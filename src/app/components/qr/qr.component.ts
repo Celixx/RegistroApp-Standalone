@@ -12,6 +12,8 @@ import { Asistencia } from 'src/app/model/asistencia';
 import jsQR, { QRCode } from 'jsqr';
 import { HomePage } from 'src/app/pages/home/home.page';
 import { StorageService } from 'src/app/services/storage.service';
+import { AuthService } from 'src/app/services/auth-guard.service';
+import { DataBaseService } from 'src/app/services/data-base.service';
 
 @Component({
   selector: 'app-qr',
@@ -30,18 +32,21 @@ export class QrComponent  implements OnInit {
 
   @ViewChild('titulo', { read: ElementRef }) itemTitulo!: ElementRef;
 
-  public usuario: Usuario;
+  public usuario: Usuario | undefined;
   public escaneando = false;
   public asistencia: Asistencia = new Asistencia();
   public datosQR: string = '';
   public rescatado: Array<any>=[];
+  listaUsuarios: Usuario[] = [];
 
   constructor(private activeroute: ActivatedRoute
     , private router: Router
     , private toastController: ToastController
     , private animationController: AnimationController
     , private homePage: HomePage
-    , private storage: StorageService) { 
+    , private storage: StorageService
+    , private authGuard: AuthService
+    , private bd: DataBaseService) { 
 
     this.usuario = new Usuario();
     
@@ -61,47 +66,44 @@ export class QrComponent  implements OnInit {
 
   }
 
+  ionViewWillEnter(): void {
+    const userAuth = this.authGuard.leerUsuarioAutenticado();
+    console.log(userAuth);
+
+    this.authGuard.leerUsuarioAutenticado().then((usuario: Usuario | undefined) => {
+      if (usuario) {
+        this.bd.listaUsuarios.subscribe(usuarios => {
+          this.listaUsuarios = usuarios;
+        });
+        this.authGuard.leerUsuarioAutenticado().then((usuario) => {
+          this.usuario = usuario;
+        })
+      } else {
+        this.router.navigate(['login'])
+      }
+    });
+  }
+
   ngOnInit() {
-    this.rescatarUsuarioAutenticado();
+    // this.rescatarUsuarioAutenticado();
   }
 
-  async rescatarUsuarioAutenticado() {
-    const ayuda = await this.storage.leerUsuarioAutenticadoSinPrivacidad();
-    if(ayuda === null){
+  // async rescatarUsuarioAutenticado() {
+  //   const ayuda = await this.storage.leerUsuarioAutenticadoSinPrivacidad();
+  //   if(ayuda === null){
       
-    }else{
-      this.usuario.setUsuario(ayuda.correo,
-        ayuda.password,
-        ayuda.nombre,
-        ayuda.apellido,
-        ayuda.preguntaSecreta,
-        ayuda.respuestaSecreta,
-        ayuda.sesionActiva,
-        false);
-    }
+  //   }else{
+  //     this.usuario.setUsuario(ayuda.correo,
+  //       ayuda.password,
+  //       ayuda.nombre,
+  //       ayuda.apellido,
+  //       ayuda.preguntaSecreta,
+  //       ayuda.respuestaSecreta,
+  //       ayuda.sesionActiva,
+  //       false);
+  //   }
                             
-  }
-
-
-  public miClaseRedirect(): void {
-    const navigationExtras: NavigationExtras = {
-      state: {
-        usuario: this.usuario,
-        asistencia: this.asistencia
-      }
-    };
-    this.router.navigate(['/mi-clase'],navigationExtras);
-  }
-
-  public homeRedirect(): void {
-    const navigationExtras: NavigationExtras = {
-      state: {
-        usuario: this.usuario
-      }
-    };
-
-    this.router.navigate(['home'],navigationExtras);
-  }
+  // }
 
   public async scanQR() {
 

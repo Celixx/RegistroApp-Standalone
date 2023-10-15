@@ -17,7 +17,8 @@ import { DataBaseService } from './app/services/data-base.service';
 import { InitializeAppService } from './app/services/initialize.app.service';
 import { DbnameVersionService } from './app/services/dbname-version.service';
 import { StorageService } from "./app/services/storage.service";
-import { IonicStorageModule } from "@ionic/storage-angular";
+import { IonicStorageModule, Storage } from "@ionic/storage-angular";
+import { AuthService } from "./app/services/auth-guard.service";
 
 if (environment.production) {
   enableProdMode();
@@ -47,7 +48,8 @@ bootstrapApplication(AppComponent, {
     SQLiteService,
     DataBaseService,
     DbnameVersionService,
-    StorageService,
+    Storage,
+    AuthService,
     {
       provide: APP_INITIALIZER,
       useFactory: initializeFactory,

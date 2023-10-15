@@ -11,6 +11,8 @@ import { NavigationExtras } from '@angular/router';
 import { Asistencia } from 'src/app/model/asistencia';
 import jsQR, { QRCode } from 'jsqr';
 import { StorageService } from 'src/app/services/storage.service';
+import { AuthService } from 'src/app/services/auth-guard.service';
+import { DataBaseService } from 'src/app/services/data-base.service';
 
 
 @Component({
@@ -30,16 +32,19 @@ export class HomePage {
 
   @ViewChild('titulo', { read: ElementRef }) itemTitulo!: ElementRef;
 
-  public usuario: Usuario;
+  public usuario: Usuario | undefined;
   public escaneando = false;
   public asistencia: Asistencia = new Asistencia();
   public datosQR: string = '';
+  listaUsuarios: Usuario[] = [];
 
   constructor(private activeroute: ActivatedRoute
   , private router: Router
   , private toastController: ToastController
   , private animationController: AnimationController
-  , private storage: StorageService) {
+  , private storage: StorageService
+  , private authGuard: AuthService
+  , private bd: DataBaseService) {
 
     this.usuario = new Usuario();
 
@@ -56,6 +61,24 @@ export class HomePage {
 
     });
 
+  }
+
+  ionViewWillEnter(): void {
+    const userAuth = this.authGuard.leerUsuarioAutenticado();
+    console.log(userAuth);
+
+    this.authGuard.leerUsuarioAutenticado().then((usuario: Usuario | undefined) => {
+      if (usuario) {
+        this.bd.listaUsuarios.subscribe(usuarios => {
+          this.listaUsuarios = usuarios;
+        });
+        this.authGuard.leerUsuarioAutenticado().then((usuario) => {
+          this.usuario = usuario;
+        })
+      } else {
+        this.router.navigate(['login'])
+      }
+    });
   }
 
   public ngOnInit(): void {
@@ -153,7 +176,7 @@ export class HomePage {
   }
 
   public signOut(): void {
-    this.storage.eliminarUsuarioAutenticado();
+    this.authGuard.logout();
     
     this.router.navigate(['/login'])
   }
