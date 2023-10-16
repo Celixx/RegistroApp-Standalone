@@ -51,31 +51,18 @@ export class QrComponent  implements OnInit {
     this.usuario = new Usuario();
     
 
-    this.activeroute.queryParams.subscribe(params => { 
-
-      const nav = this.router.getCurrentNavigation();
-      if (nav) {
-        if (nav.extras.state) {
-          this.usuario = nav.extras.state['usuario'];
-          return;
-        }
-      }
-      // this.router.navigate(['/login']);
-
-    });
-
   }
 
   ionViewWillEnter(): void {
-    const userAuth = this.authGuard.leerUsuarioAutenticado();
-    console.log(userAuth);
-
     this.authGuard.leerUsuarioAutenticado().then((usuario: Usuario | undefined) => {
       if (usuario) {
         this.bd.listaUsuarios.subscribe(usuarios => {
           this.listaUsuarios = usuarios;
         });
         this.authGuard.leerUsuarioAutenticado().then((usuario) => {
+          if(!usuario){
+            return
+          }
           this.usuario = usuario;
         })
       } else {

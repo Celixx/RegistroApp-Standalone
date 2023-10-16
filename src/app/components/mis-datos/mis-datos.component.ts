@@ -20,20 +20,23 @@ import { DataBaseService } from 'src/app/services/data-base.service';
 })
 export class MisDatosComponent  implements OnInit {
   listaUsuarios: Usuario[] = [];
-  public usuario: Usuario | undefined;
+  public usuario: Usuario;
+  passwordRep: string = '';
 
-  constructor(private authGuard: AuthService, private bd: DataBaseService, private router: Router) { }
+  constructor(private authGuard: AuthService, private bd: DataBaseService, private router: Router, private toastController: ToastController) {
+    this.usuario = new Usuario();
+  }
 
   ionViewWillEnter(): void {
-    const userAuth = this.authGuard.leerUsuarioAutenticado();
-    console.log(userAuth);
-
     this.authGuard.leerUsuarioAutenticado().then((usuario: Usuario | undefined) => {
       if (usuario) {
         this.bd.listaUsuarios.subscribe(usuarios => {
           this.listaUsuarios = usuarios;
         });
         this.authGuard.leerUsuarioAutenticado().then((usuario) => {
+          if(!usuario){
+            return
+          }
           this.usuario = usuario;
         })
       } else {
@@ -42,9 +45,28 @@ export class MisDatosComponent  implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
-  public guardar(): void {}
+  public guardar(): void {
+    if(this.usuario.password === this.passwordRep){
+      this.bd.guardarUsuario(this.usuario);
+      this.mostrarMensaje(`Cambias guardados con éxito`, 2000);
+    } else {
+      this.mostrarMensaje(`Las contraseñas no coinciden`, 2000);
+    }
+  }
 
-  public cerrarSesion(): void {}
+  async mostrarMensaje(mensaje: string, duracion?: number) {
+
+    const mensajeToast = await this.toastController.create({
+      message: mensaje,
+      duration: duracion? duracion: 3000
+    });
+    mensajeToast.present();
+  }
+
+  public cerrarSesion(): void {
+    this.authGuard.logout();
+  }
 }

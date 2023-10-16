@@ -43,16 +43,15 @@ export class ForoComponent  implements OnInit {
   ngOnInit() {}
 
   ionViewWillEnter() {
-
-    const userAuth = this.authGuard.leerUsuarioAutenticado();
-    console.log(userAuth);
-
     this.authGuard.leerUsuarioAutenticado().then((usuario: Usuario | undefined) => {
       if (usuario) {
         this.bd.listaUsuarios.subscribe(usuarios => {
           this.listaUsuarios = usuarios;
         });
         this.authGuard.leerUsuarioAutenticado().then((usuario) => {
+          if(!usuario){
+            return
+          }
           this.usuario = usuario;
         })
       } else {

@@ -65,7 +65,11 @@ export class AuthService {
   }
 
   async leerUsuarioAutenticado(): Promise<Usuario | undefined> {
-    return this.storage.get(this.keyUsuario).then(usuario => usuario as Usuario);
+    return this.storage.get(this.keyUsuario).then(data => {
+      const usuario = new Usuario();
+      usuario.setUsuario(data.correo, data.password, data.nombre, data.apellido, data.preguntaSecreta, data.respuestaSecreta, data.sesionActiva, data.hideSecrets);
+      return usuario;
+    });
   }
 
 }
