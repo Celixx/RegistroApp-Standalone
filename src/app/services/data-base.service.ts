@@ -70,6 +70,13 @@ export class DataBaseService {
     await this.leerUsuarios();
   }
 
+  async updateUsuario(usuario: Usuario, correo: String) {
+    const sql = 'UPDATE USUARIO SET correo=?, password=?, nombre=?, apellido=?, preguntaSecreta=?, respuestaSecreta=?, sesionActiva=? WHERE correo=?;';
+    await this.db.run(sql, [usuario.correo, usuario.password, usuario.nombre, usuario.apellido, 
+      usuario.preguntaSecreta, usuario.respuestaSecreta, usuario.sesionActiva, usuario.correo]);
+    await this.leerUsuarios();
+  }
+
   // Cada vez que se ejecute leerUsuario() la aplicación va a cargar los usuarios desde la base de datos,
   // y por medio de la instrucción "this.listaUsuarios.next(usuarios);" le va a notificar a todos los programas
   // que se subscribieron a la propiedad "listaUsuarios", que la tabla de usuarios se acaba de cargar. De esta

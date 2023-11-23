@@ -1,0 +1,26 @@
+<ion-content>
+  <div class="background-image"></div>
+  <div class="content">
+    <ion-card class="gray-opaque">
+      <ion-card-title class="ion-padding-horizontal ion-padding-vertical">Administrar Usuarios</ion-card-title>
+      
+          <ion-card *ngFor="let u of listaUsuarios">
+            <ion-card-header>
+              <ion-card-title>{{ u.nombre }} {{ u.apellido }}</ion-card-title>
+            </ion-card-header>
+
+            <ion-card-content>
+              <p>Nombre: {{ u.nombre }}</p>
+              <p>Apellido: {{ u.apellido }}</p>
+              <p>Correo: {{u.correo}}</p>
+            </ion-card-content>
+
+            <ion-button color="danger" shape="round" size="small" (click)="eliminarUsuario(u)">
+              Eliminar
+              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+            </ion-button>
+
+          </ion-card>
+    </ion-card>
+  </div>
+</ion-content>

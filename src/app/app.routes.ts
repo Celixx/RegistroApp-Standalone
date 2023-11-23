@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { AdminComponent } from './components/admin/admin.component';
 
 export const routes: Routes = [
   {
@@ -25,6 +26,10 @@ export const routes: Routes = [
       {
         path: 'foro',
         loadComponent: () => import('./components/foro/foro.component').then( m => m.ForoComponent)
+      },
+      {
+        path: 'admin',
+        loadComponent: () => import('./components/admin/admin.component').then(m => m.AdminComponent)
       }
     ]
   },
