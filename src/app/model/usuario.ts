@@ -49,7 +49,17 @@ export class Usuario {
     }
   
     validarPassword(password: string): string {
-      if (password.trim() === '') return 'Para entrar al sistema debe ingresar la contraseña.';
+      if (this.password.trim() === '') {
+        return 'Para entrar al sistema debe ingresar la contraseña.';
+      }
+      for(let i = 0; i < this.password.length; i++) {
+        if ('9876543210'.indexOf(this.password.charAt(i)) === -1) {
+          return 'La contraseña debe ser numérica.';
+        }
+      }
+      if (this.password.length !== 4) {
+        return 'La contraseña debe ser numérica de 4 dígitos.';
+      }
       return '';
     }
 
