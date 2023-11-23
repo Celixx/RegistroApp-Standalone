@@ -15,32 +15,32 @@
             <ion-card-content class="ion-text-center">
               <!-- input Nombre -->
               <ion-item>
-                <ion-input type="text" label="Nombre" labelPlacement="floating" name="nombre" [(ngModel)]="usuario!.nombre"></ion-input>
+                <ion-input id="inputNombre" type="text" label="Nombre" labelPlacement="floating" name="nombre" [(ngModel)]="usuario!.nombre"></ion-input>
               </ion-item>
               <!-- Input Apellidos -->
               <ion-item>
-                <ion-input type="text" label="Apellidos" labelPlacement="floating" name="apellidos" [(ngModel)]="usuario!.apellido"></ion-input>
+                <ion-input id="inputApellido" type="text" label="Apellidos" labelPlacement="floating" name="apellidos" [(ngModel)]="usuario!.apellido"></ion-input>
               </ion-item>
               <!-- Input Correo -->
               <ion-item>
-                <ion-input type="text" label="Correo" labelPlacement="floating" name="correo" [(ngModel)]="usuario!.correo"></ion-input>
+                <ion-input id="inputCorreo" type="text" label="Correo" labelPlacement="floating" name="correo" [(ngModel)]="usuario!.correo"></ion-input>
               </ion-item>
               <!-- Input Pregunta Secreta -->
               <ion-item>
-                <ion-input type="text" label="Pregunta Secreta" labelPlacement="floating" name="preguntaSecreta" [(ngModel)]="usuario!.preguntaSecreta"></ion-input>
+                <ion-input id="inputPregunta" type="text" label="Pregunta Secreta" labelPlacement="floating" name="preguntaSecreta" [(ngModel)]="usuario!.preguntaSecreta"></ion-input>
               </ion-item>
               <!-- Input Respuesta -->
               <ion-item>
-                <ion-input type="text" label="Respuesta Secreta" labelPlacement="floating" name="respuestaSecreta" [(ngModel)]="usuario!.respuestaSecreta"></ion-input>
+                <ion-input id="inputRespuesta" type="text" label="Respuesta Secreta" labelPlacement="floating" name="respuestaSecreta" [(ngModel)]="usuario!.respuestaSecreta"></ion-input>
               </ion-item>
               <!-- Input contraseña -->
               <ion-item>
-                <ion-input type="password" label="Contraseña" labelPlacement="floating" name="password"
+                <ion-input id="inputContraseña" type="password" label="Contraseña" labelPlacement="floating" name="password"
                 placeholder="********" [(ngModel)]="usuario!.password"></ion-input>
               </ion-item>
               <!-- Input Repetir Contraseña -->
               <ion-item>
-                <ion-input type="password" label="Repetir Contraseña" labelPlacement="floating" name="repetirContraseña" [(ngModel)] = "passwordRep"></ion-input>
+                <ion-input id="inputRepetir" type="password" label="Repetir Contraseña" labelPlacement="floating" name="repetirContraseña" [(ngModel)] = "passwordRep"></ion-input>
               </ion-item>
               <!-- Boton ingresar -->
               <ion-button size="small" color="warning" (click)="guardar()">

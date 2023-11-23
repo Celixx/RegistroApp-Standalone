@@ -10,7 +10,7 @@
         <!-- Publicador -->
         <ion-list>
           <ion-item>
-            <ion-select placeholder="Selecciona tu usuario" [(ngModel)]="selectedUserId" (ngModelChange)="cambiarUsuario($event)" [ngModelOptions]="{standalone: true}">
+            <ion-select id="userSelect" placeholder="Selecciona tu usuario" [(ngModel)]="selectedUserId" (ngModelChange)="cambiarUsuario($event)" [ngModelOptions]="{standalone: true}">
               <div slot="label">Publicador</div>
               <ion-select-option *ngFor="let u of usuarios" [value]="u.id">{{ u.name }}</ion-select-option>
             </ion-select>
@@ -22,12 +22,12 @@
     
         <!-- Input Título -->
       <ion-item>
-        <ion-input type="text" label="Título" name="titulo" placeholder="Escriba aquí" [(ngModel)] = "publicacion.title"></ion-input>
+        <ion-input id="inputTitulo" type="text" label="Título" name="titulo" placeholder="Escriba aquí" [(ngModel)] = "publicacion.title"></ion-input>
       </ion-item>
     
       <!-- Input Cuerpo -->
       <ion-item>
-        <ion-textarea label="Cuerpo" placeholder="Escriba aquí" [(ngModel)]="publicacion.body"></ion-textarea>
+        <ion-textarea id="inputCuerpo" label="Cuerpo" placeholder="Escriba aquí" [(ngModel)]="publicacion.body"></ion-textarea>
       </ion-item>
       
       <!-- Botones -->
