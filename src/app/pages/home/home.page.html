@@ -39,7 +39,7 @@
         <ion-label>Perfil</ion-label>
       </ion-segment-button>
 
-      <ion-segment-button value="admin">
+      <ion-segment-button *ngIf="usuario!.nombre=='admin'" value="admin">
         <ion-label>Admin</ion-label>
       </ion-segment-button>
     </ion-segment>

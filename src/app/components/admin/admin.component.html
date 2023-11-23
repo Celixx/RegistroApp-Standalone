@@ -15,7 +15,7 @@
               <p>Correo: {{u.correo}}</p>
             </ion-card-content>
 
-            <ion-button color="danger" shape="round" size="small" (click)="eliminarUsuario(u)">
+            <ion-button *ngIf="u.nombre!=='admin'" color="danger" shape="round" size="small" (click)="eliminarUsuario(u)">
               Eliminar
               <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
             </ion-button>
