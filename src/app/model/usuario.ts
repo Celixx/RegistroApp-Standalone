@@ -69,7 +69,7 @@ export class Usuario {
     }
 
     validarApellido(apellido: string): string {
-      if (apellido.trim() === '') return 'Debe ingresar su nombre.';
+      if (apellido.trim() === '') return 'Debe ingresar su apellido.';
       return '';
     }
 

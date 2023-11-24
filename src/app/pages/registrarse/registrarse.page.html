@@ -57,8 +57,12 @@
             <ion-input id="inputRepetir" type="password" label="Repetir Contraseña" labelPlacement="floating" name="repetirContraseña" [(ngModel)] = "passwordRep"></ion-input>
           </ion-item>
           <!-- Boton ingresar -->
-          <ion-button size="small" color="warning" (click)="registrar()">
+          <ion-button shape="block" color="warning" (click)="registrar()">
             Regisrarse
+          </ion-button>
+          <!-- Botón volver al login -->
+          <ion-button (click)="volverInicio()" fill="clear" shape="square">
+            Iniciar sesión
           </ion-button>
         </ion-card-content>
       </form>

@@ -43,17 +43,44 @@ export class RegistrarsePage implements OnInit {
   }
 
   public registrar() {
-    console.log(this.usuario);
+    // Validaciones
     this.mensajeError = this.usuario.validarNombre(this.usuario.nombre);
-    console.log(this.mensajeError);
-    this.mensajeError = this.usuario.validarApellido(this.usuario.apellido);
-    this.mensajeError = this.usuario.validarCorreo(this.usuario.correo);
-    this.mensajeError = this.usuario.validarPreguntaSecreta(this.usuario.preguntaSecreta);
-    this.mensajeError = this.usuario.validarRespuestaSecreta(this.usuario.respuestaSecreta);
-    this.mensajeError = this.usuario.validarPassword(this.usuario.password);
-    if(this.usuario.nombre !== "") {
-      this.mostrarMensaje('error');
-      console.log('error');
+    if(this.mensajeError != "") {
+      this.mostrarMensaje(this.mensajeError);
     }
+    this.mensajeError = this.usuario.validarApellido(this.usuario.apellido);
+    if(this.mensajeError != "") {
+      this.mostrarMensaje(this.mensajeError);
+    }
+    this.mensajeError = this.usuario.validarCorreo(this.usuario.correo);
+    if(this.mensajeError != "") {
+      this.mostrarMensaje(this.mensajeError);
+    }
+    this.mensajeError = this.usuario.validarPreguntaSecreta(this.usuario.preguntaSecreta);
+    if(this.mensajeError != "") {
+      this.mostrarMensaje(this.mensajeError);
+    }
+    this.mensajeError = this.usuario.validarRespuestaSecreta(this.usuario.respuestaSecreta);
+    if(this.mensajeError != "") {
+      this.mostrarMensaje(this.mensajeError);
+    }
+    this.mensajeError = this.usuario.validarPassword(this.usuario.password);
+    if(this.mensajeError != "") {
+      this.mostrarMensaje(this.mensajeError);
+    }
+    if(this.usuario.password != this.passwordRep) {
+      this.mostrarMensaje('Error, las contraseñas no coinciden');
+    }
+
+    // Creación del usuario
+    this.bd.guardarUsuario(this.usuario);
+    this.mostrarMensaje('Usuario creado con éxito');
+
+    //Navigate login
+    this.router.navigate([''])
+  }
+
+  public volverInicio() {
+    this.router.navigate([''])
   }
 }
