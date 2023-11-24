@@ -1,0 +1,69 @@
+<ion-content [fullscreen]="true" class="background">
+  <div class="header">
+    <ion-grid fixed class="gray-opaque">
+      <ion-row>
+        <ion-col>
+          <ion-img class="ion-padding-horizontal ion-padding-vertical"
+            src="../../assets/images/Logo_DuocUC.svg"></ion-img>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-title class="ion-text-center ion-padding-vertical">
+            <h1>Sistema de Asistencia DuocUC</h1>
+          </ion-title>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <!-- Card login -->
+  <div class="flex-align-center">
+    <ion-card class="ion-padding-vertical gray-opaque">
+      <!-- Card Tittle -->
+      <ion-card-title class="ion-text-center ion-padding-horizontal">
+        <ion-label id="label">Ingresa tus datos!</ion-label>
+      </ion-card-title>
+
+      <form>
+        <ion-card-content class="ion-text-center">
+          <!-- input Nombre -->
+          <ion-item>
+            <ion-input id="inputNombre" type="text" label="Nombre" labelPlacement="floating" name="nombre" [(ngModel)]="usuario!.nombre"></ion-input>
+          </ion-item>
+          <!-- Input Apellidos -->
+          <ion-item>
+            <ion-input id="inputApellido" type="text" label="Apellidos" labelPlacement="floating" name="apellidos" [(ngModel)]="usuario!.apellido"></ion-input>
+          </ion-item>
+          <!-- Input Correo -->
+          <ion-item>
+            <ion-input id="inputCorreo" type="text" label="Correo" labelPlacement="floating" name="correo" [(ngModel)]="usuario!.correo"></ion-input>
+          </ion-item>
+          <!-- Input Pregunta Secreta -->
+          <ion-item>
+            <ion-input id="inputPregunta" type="text" label="Pregunta Secreta" labelPlacement="floating" name="preguntaSecreta" [(ngModel)]="usuario!.preguntaSecreta"></ion-input>
+          </ion-item>
+          <!-- Input Respuesta -->
+          <ion-item>
+            <ion-input id="inputRespuesta" type="text" label="Respuesta Secreta" labelPlacement="floating" name="respuestaSecreta" [(ngModel)]="usuario!.respuestaSecreta"></ion-input>
+          </ion-item>
+          <!-- Input contraseña -->
+          <ion-item>
+            <ion-input id="inputContraseña" type="password" label="Contraseña" labelPlacement="floating" name="password"
+            placeholder="********" [(ngModel)]="usuario!.password"></ion-input>
+          </ion-item>
+          <!-- Input Repetir Contraseña -->
+          <ion-item>
+            <ion-input id="inputRepetir" type="password" label="Repetir Contraseña" labelPlacement="floating" name="repetirContraseña" [(ngModel)] = "passwordRep"></ion-input>
+          </ion-item>
+          <!-- Boton ingresar -->
+          <ion-button size="small" color="warning" (click)="registrar()">
+            Regisrarse
+          </ion-button>
+        </ion-card-content>
+      </form>
+
+    </ion-card>
+  </div>
+
+</ion-content>

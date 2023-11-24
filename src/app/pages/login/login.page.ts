@@ -55,4 +55,8 @@ export class LoginPage implements OnInit {
     mensajeToast.present();
   }
 
+  public registrar() {
+    this.router.navigate(['/registrarse'])
+  }
+
 }
