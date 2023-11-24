@@ -22,6 +22,7 @@ export class MisDatosComponent  implements OnInit {
   listaUsuarios: Usuario[] = [];
   public usuario: Usuario;
   passwordRep: string = '';
+  mensajeError: string = "";
 
   constructor(private authGuard: AuthService, private bd: DataBaseService, private router: Router, private toastController: ToastController) {
     this.usuario = new Usuario();
@@ -49,11 +50,45 @@ export class MisDatosComponent  implements OnInit {
   }
 
   public guardar(): void {
-    if(this.usuario.password === this.passwordRep){
+    this.mensajeError = "";
+    this.mensajeError = this.usuario.validarNombre(this.usuario.nombre);
+    console.log(this.mensajeError);
+    if(this.mensajeError != "") {
+      this.mostrarMensaje(this.mensajeError);
+      return
+    }
+    this.mensajeError = this.usuario.validarApellido(this.usuario.apellido);
+    if(this.mensajeError != "") {
+      this.mostrarMensaje(this.mensajeError);
+      return
+    }
+    this.mensajeError = this.usuario.validarCorreo(this.usuario.correo);
+    if(this.mensajeError != "") {
+      this.mostrarMensaje(this.mensajeError);
+      return
+    }
+    this.mensajeError = this.usuario.validarPreguntaSecreta(this.usuario.preguntaSecreta);
+    if(this.mensajeError != "") {
+      this.mostrarMensaje(this.mensajeError);
+      return
+    }
+    this.mensajeError = this.usuario.validarRespuestaSecreta(this.usuario.respuestaSecreta);
+    if(this.mensajeError != "") {
+      this.mostrarMensaje(this.mensajeError);
+      return
+    }
+    this.mensajeError = this.usuario.validarPassword(this.usuario.password);
+    if(this.mensajeError != "") {
+      this.mostrarMensaje(this.mensajeError);
+      return
+    }
+    if(this.usuario.password != this.passwordRep) {
+      this.mostrarMensaje('Error, las contraseñas no coinciden');
+      return
+    }
+    if(this.mensajeError == "") {
       this.bd.updateUsuario(this.usuario, this.usuario.correo);
-      this.mostrarMensaje(`Cambias guardados con éxito`, 2000);
-    } else {
-      this.mostrarMensaje(`Las contraseñas no coinciden`, 2000);
+      this.mostrarMensaje(`Cambios guardados con éxito`, 2000);
     }
   }
 

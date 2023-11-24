@@ -44,40 +44,48 @@ export class RegistrarsePage implements OnInit {
 
   public registrar() {
     // Validaciones
+    this.mensajeError = "";
     this.mensajeError = this.usuario.validarNombre(this.usuario.nombre);
     if(this.mensajeError != "") {
       this.mostrarMensaje(this.mensajeError);
+      return
     }
     this.mensajeError = this.usuario.validarApellido(this.usuario.apellido);
     if(this.mensajeError != "") {
       this.mostrarMensaje(this.mensajeError);
+      return
     }
     this.mensajeError = this.usuario.validarCorreo(this.usuario.correo);
     if(this.mensajeError != "") {
       this.mostrarMensaje(this.mensajeError);
+      return
     }
     this.mensajeError = this.usuario.validarPreguntaSecreta(this.usuario.preguntaSecreta);
     if(this.mensajeError != "") {
       this.mostrarMensaje(this.mensajeError);
+      return
     }
     this.mensajeError = this.usuario.validarRespuestaSecreta(this.usuario.respuestaSecreta);
     if(this.mensajeError != "") {
       this.mostrarMensaje(this.mensajeError);
+      return
     }
     this.mensajeError = this.usuario.validarPassword(this.usuario.password);
     if(this.mensajeError != "") {
       this.mostrarMensaje(this.mensajeError);
+      return
     }
     if(this.usuario.password != this.passwordRep) {
       this.mostrarMensaje('Error, las contraseñas no coinciden');
+      return
     }
-
     // Creación del usuario
-    this.bd.guardarUsuario(this.usuario);
-    this.mostrarMensaje('Usuario creado con éxito');
-
-    //Navigate login
-    this.router.navigate([''])
+    if(this.mensajeError == "") {
+      this.bd.guardarUsuario(this.usuario);
+      this.mostrarMensaje("Usuario creado con éxito");
+      //Navigate login
+      this.router.navigate([''])
+    }
   }
 
   public volverInicio() {
