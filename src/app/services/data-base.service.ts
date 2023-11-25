@@ -55,6 +55,8 @@ export class DataBaseService {
     await this.guardarUsuario(usu);
     usu.setUsuario('cmujica@duocuc.cl', '0987', 'Carla', 'Mujica', '¿Cuál es tu vehículo favorito?', 'moto', 'N', false);
     await this.guardarUsuario(usu);
+    usu.setUsuario('admin@admin.com','admin', 'admin', '','','','N', false);
+    await this.guardarUsuario(usu);
   }
 
   // Create y Update del CRUD. La creación y actualización de un usuario
