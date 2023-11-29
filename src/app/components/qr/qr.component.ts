@@ -1,19 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
+import { NgZone, AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AfterViewInit, ElementRef, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
-import { AnimationController} from '@ionic/angular';
-import { Usuario } from 'src/app/model/usuario';
-import { NavigationExtras } from '@angular/router';
+import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+import { AlertController, AnimationController, IonicModule, ToastController } from '@ionic/angular';
 import { Asistencia } from 'src/app/model/asistencia';
+import { Usuario } from 'src/app/model/usuario';
 import jsQR, { QRCode } from 'jsqr';
-import { HomePage } from 'src/app/pages/home/home.page';
-import { StorageService } from 'src/app/services/storage.service';
 import { AuthService } from 'src/app/services/auth-guard.service';
 import { DataBaseService } from 'src/app/services/data-base.service';
+import { SQLiteService } from 'src/app/services/sqlite.service';
+import { showAlertDUOC, showAlertYesNoDUOC } from 'src/app/model/message';
+import { BarcodeFormat, BarcodeScanner, ScanResult, } from '@capacitor-mlkit/barcode-scanning';
+import { MessageEnum } from 'src/app/model/message-enum';
+import { Capacitor } from '@capacitor/core';
+
+
 
 @Component({
   selector: 'app-qr',
@@ -22,78 +23,96 @@ import { DataBaseService } from 'src/app/services/data-base.service';
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule]
 })
-export class QrComponent  implements OnInit {
-
+export class QrComponent  implements OnInit, AfterViewInit {
+  bloquear: boolean = true;
+  @ViewChild('Nombre', { read: ElementRef }) itemNombreTit!: ElementRef;
+  @ViewChild('Bienvenida', { read: ElementRef }) itemBienvenida!: ElementRef;
+  @ViewChild('titulo', { read: ElementRef }) itemTitulo!: ElementRef;
+  
+  @ViewChild('itemNombre', { read: ElementRef }) itemNombre!: ElementRef;
+  @ViewChild('itemApellido', { read: ElementRef }) itemApellido!: ElementRef;
   @ViewChild('video')
   private video!: ElementRef;
 
   @ViewChild('canvas')
   private canvas!: ElementRef;
 
-  @ViewChild('titulo', { read: ElementRef }) itemTitulo!: ElementRef;
-
-  public usuario: Usuario | undefined;
-  public escaneando = false;
   public asistencia: Asistencia = new Asistencia();
+  public escaneando = false;
   public datosQR: string = '';
-  public rescatado: Array<any>=[];
-  listaUsuarios: Usuario[] = [];
+  public datos = false;
+  public plataforma: string = '';
+  public usuario: Usuario | null = new Usuario();
 
-  constructor(private activeroute: ActivatedRoute
-    , private router: Router
-    , private toastController: ToastController
-    , private animationController: AnimationController
-    , private homePage: HomePage
-    , private storage: StorageService
-    , private authGuard: AuthService
-    , private bd: DataBaseService) { 
+  constructor(private activeroute: ActivatedRoute , 
+    private router: Router , 
+    private authService : AuthService, 
+    private animationController: AnimationController, 
+    private sqliteService: SQLiteService,
+    private bd: DataBaseService,
+    private readonly ngZone: NgZone) { 
+      
+    }
 
-    this.usuario = new Usuario();
-    
-
+  
+  
+  
+  ngAfterViewInit(): void {
+    if (this.itemNombreTit) {
+      const animation = this.animationController
+        .create()
+          .addElement(this.itemNombreTit.nativeElement)
+          .iterations(7)
+          .duration(400)
+          .fromTo('transform', 'scale3d(1,1,1)', 'scale')
+          .fromTo("opacity",0.2,1)
+          ;
+        animation.play();
+      }
+    if (this.itemBienvenida) {
+      const animation = this.animationController
+      .create()
+        .addElement(this.itemBienvenida.nativeElement)
+        .iterations(7)
+        .duration(400)
+        .fromTo('transform', 'scale3d(1,1,1)', 'scale')
+        .fromTo('color','white','orange')
+        .fromTo("opacity",0.2,1)
+        ;
+      animation.play();
+      }
+    if (this.itemTitulo) {
+    const animation = this.animationController
+      .create()
+        .addElement(this.itemTitulo.nativeElement)
+        .iterations(Infinity)
+        .duration(6000)
+        .fromTo('transform', 'translate(0%)', 'translate(100%)')
+        ;
+      animation.play();
+    }
   }
 
-  ionViewWillEnter(): void {
-    this.authGuard.leerUsuarioAutenticado().then((usuario: Usuario | undefined) => {
-      if (usuario) {
-        this.bd.listaUsuarios.subscribe(usuarios => {
-          this.listaUsuarios = usuarios;
-        });
-        this.authGuard.leerUsuarioAutenticado().then((usuario) => {
-          if(!usuario){
-            return
-          }
-          this.usuario = usuario;
-        })
-      } else {
-        this.router.navigate(['login'])
-      }
+  async ngOnInit() {
+    this.plataforma = this.sqliteService.platform;
+    this.authService.usuarioAutenticado.subscribe((usuario) => {
+      this.usuario = usuario? usuario : new Usuario();
     });
   }
 
-  ngOnInit() {
-    // this.rescatarUsuarioAutenticado();
+  async comenzarEscaneoQR() {
+    if (this.plataforma === 'web') {
+      this.comenzarEscaneoQRWeb();
+    } else {
+      this.comenzarEscaneoQRNativo();
+    }
   }
 
-  // async rescatarUsuarioAutenticado() {
-  //   const ayuda = await this.storage.leerUsuarioAutenticadoSinPrivacidad();
-  //   if(ayuda === null){
-      
-  //   }else{
-  //     this.usuario.setUsuario(ayuda.correo,
-  //       ayuda.password,
-  //       ayuda.nombre,
-  //       ayuda.apellido,
-  //       ayuda.preguntaSecreta,
-  //       ayuda.respuestaSecreta,
-  //       ayuda.sesionActiva,
-  //       false);
-  //   }
-                            
-  // }
+  /**
+   *  Proceso de escanéo de QR en un Navegador Web
+   */
 
-  public async scanQR() {
-
+  public async comenzarEscaneoQRWeb() {
     const mediaProvider: MediaProvider = await navigator.mediaDevices.getUserMedia({
       video: {facingMode: 'environment'}
     });
@@ -102,7 +121,6 @@ export class QrComponent  implements OnInit {
     this.video.nativeElement.play();
     this.escaneando = true;
     requestAnimationFrame(this.verificarVideo.bind(this));
-
   }
 
   async verificarVideo() {
@@ -122,72 +140,96 @@ export class QrComponent  implements OnInit {
     const context: CanvasRenderingContext2D = this.canvas.nativeElement.getContext('2d');
     context.drawImage(this.video.nativeElement, 0, 0, w, h);
     const img: ImageData = context.getImageData(0, 0, w, h);
-    let qrCode: QRCode | null = jsQR(img.data, w, h, { inversionAttempts: 'dontInvert' });
+    let qrCode: QRCode  | null = jsQR(img.data, w, h, { inversionAttempts: 'dontInvert' });
     if (qrCode) {
-      if (qrCode.data !== '') {
+      const data = qrCode.data;
+      if (data !== '') {
         this.escaneando = false;
-        this.mostrarQR(qrCode.data);
+        if (this.asistencia.verificarAsistenciaDesdeQR(qrCode.data)) {
+          this.bd.asistencia = this.asistencia.obtenerAsistenciaDesdeQR(qrCode.data);
+          this.bd.datosQR.next(qrCode.data);
+          this.router.navigate(['/home/misclases']);
+        } else {
+          showAlertDUOC('El código QR escaneado no corresponde a una Asistencia de DUOC');
+        }
         return true;
       }
     }
     return false;
   }
 
-  async mostrarMensaje(mensaje: string, duracion?: number) {
-
-    const mensajeToast = await this.toastController.create({
-      message: mensaje,
-      duration: duracion? duracion: 3000
-    });
-    mensajeToast.present();
-  }
-
-  public mostrarQR(datosQR: string): void {
-    this.datosQR = datosQR;
-    const objetoDatosQR = JSON.parse(datosQR);
-    this.asistencia.setAsistencia(objetoDatosQR.bloqueInicio, objetoDatosQR.bloqueTermino, objetoDatosQR.dia, objetoDatosQR.horaFin, objetoDatosQR.horaInicio, objetoDatosQR.idAsignatura, objetoDatosQR.nombreAsignatura, objetoDatosQR.nombreProfesor, objetoDatosQR.seccion, objetoDatosQR.sede);
-    const navigationExtras: NavigationExtras = {
-      state: {
-        usuario: this.usuario,
-        asistencia: this.asistencia
-      }
-    };
-    // this.homePage.segmentChanged('mi-clase');
-    this.router.navigate(['/home/mi-clase'],navigationExtras)
-    this.mostrarMensaje(`Código QR leido exitosamente`, 2000);
-  }
-
-  public stopScanQR(): void {
+  public detenerEscaneoQR(): void {
     this.escaneando = false;
   }
 
-  public signOut(): void {
-    this.router.navigate(['/login'])
-  }
+  /**
+   *  Proceso de escanéo de QR nativo en Android
+   *  Ver: https://github.com/capawesome-team/capacitor-barcode-scanning
+   */
 
-  public animateItem(elementRef: any) {
-    this.animationController
-      .create()
-      .addElement(elementRef)
-      .iterations(1)
-      .duration(600)
-      .fromTo('transform', 'translate(100%)', 'translate(0%)')
-      .play();
-  }
+  async comenzarEscaneoQRNativo() {
+    const datosQR = await this.escanearQRNativo();
+    if (datosQR === '') return;
+    if (datosQR.includes('Error: ')) {
+      showAlertDUOC(datosQR.substring(7));
+      return;
+    }
 
-  public ngAfterViewInit(): void {
-    if (this.itemTitulo) {
-      const animation = this.animationController
-        .create()
-        .addElement(this.itemTitulo.nativeElement)
-        .iterations(Infinity)
-        .duration(6000)
-        .fromTo('transform', 'scale(0)', 'scale(1)');
-
-      animation.play();
+    if (this.asistencia.verificarAsistenciaDesdeQR(datosQR)) {
+      this.bd.asistencia = this.asistencia.obtenerAsistenciaDesdeQR(datosQR);
+      this.bd.datosQR.next(datosQR);
+      this.router.navigate(['/home/mi-clase']);
+    } else {
+      showAlertDUOC('El código QR escaneado no corresponde a una Asistencia de DUOC');
     }
   }
 
 
+  public async escanearQRNativo(): Promise<string> {
+    try {
 
+      await BarcodeScanner.isGoogleBarcodeScannerModuleAvailable().then(async (result) => {
+        if (!result.available) await BarcodeScanner.installGoogleBarcodeScannerModule();
+      });
+
+      if (!await BarcodeScanner.isSupported()) {
+        return Promise.resolve('ERROR: Google Barcode Scanner no es compatible con este celular');
+      }
+
+      let status = await BarcodeScanner.checkPermissions();
+
+      if (status.camera === 'denied') {
+        status = await BarcodeScanner.requestPermissions();
+      }
+      
+      if (status.camera === 'denied') {
+        const resp = await showAlertYesNoDUOC('No fue posible otorgar permisos a la cámara. ¿Quiere '
+          + 'acceder a las opciones de configuración de la aplicación y darle permiso manualmente?');
+        if (resp === MessageEnum.YES) await BarcodeScanner.openSettings();
+        return Promise.resolve('');
+      }
+
+      await BarcodeScanner.removeAllListeners().then(() => {
+        BarcodeScanner.addListener('googleBarcodeScannerModuleInstallProgress', (event) => {
+          this.ngZone.run(() => {
+            console.log('googleBarcodeScannerModuleInstallProgress', event);
+          });
+        });
+      });
+
+      const { barcodes }: ScanResult = await BarcodeScanner.scan({ formats: [BarcodeFormat.QrCode],});
+      return Promise.resolve(barcodes[0].displayValue);
+      
+    } catch(error: any) {
+      if (error.message.includes('canceled')) return Promise.resolve('');
+      console.log('ERROR EN escanearQRNativo CATCH ' + error.message);
+      return Promise.resolve('ERROR: No fue posible leer el código QR');
+    }
+  }
+
+  public async installGoogleBarcodeScannerModule(): Promise<void> {
+    await BarcodeScanner.installGoogleBarcodeScannerModule();
+  }
+  
+  
 }

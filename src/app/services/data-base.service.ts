@@ -4,6 +4,7 @@ import { SQLiteService } from './sqlite.service';
 import { Usuario } from '../model/usuario';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { showAlert, showAlertDUOC, showAlertError } from '../model/message';
+import { Asistencia } from '../model/asistencia';
 
 @Injectable()
 export class DataBaseService {
@@ -29,6 +30,8 @@ export class DataBaseService {
   db!: SQLiteDBConnection;
   listaUsuarios: BehaviorSubject<Usuario[]> = new BehaviorSubject<Usuario[]>([]);
   listaUsuariosFueActualizada: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  asistencia = new Asistencia();
+  datosQR: BehaviorSubject<string> = new BehaviorSubject('');
 
   constructor(private sqliteService: SQLiteService) { }
 
@@ -116,4 +119,5 @@ export class DataBaseService {
     await this.db.run(sql, [sesionActiva, correo]);
     await this.leerUsuarios();
   }
+
 }
