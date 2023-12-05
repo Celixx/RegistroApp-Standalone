@@ -52,7 +52,6 @@ export class Asistencia {
   obtenerAsistenciaDesdeQR(datosQR: string) {
     if (this.verificarAsistenciaDesdeQR(datosQR)) {
       const parsedData = JSON.parse(datosQR) as Asistencia;
-      console.log(parsedData);
       return parsedData;
     }
     return new Asistencia();

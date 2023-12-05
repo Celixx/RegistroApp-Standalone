@@ -169,6 +169,7 @@ export class QrComponent  implements OnInit, AfterViewInit {
 
   async comenzarEscaneoQRNativo() {
     const datosQR = await this.escanearQRNativo();
+    console.log(datosQR);
     if (datosQR === '') return;
     if (datosQR.includes('Error: ')) {
       showAlertDUOC(datosQR.substring(7));
@@ -176,10 +177,15 @@ export class QrComponent  implements OnInit, AfterViewInit {
     }
 
     if (this.asistencia.verificarAsistenciaDesdeQR(datosQR)) {
-      this.bd.asistencia = this.asistencia.obtenerAsistenciaDesdeQR(datosQR);
-      this.bd.datosQR.next(datosQR);
-      this.router.navigate(['/home/mi-clase']);
-    } else {
+      this.asistencia = this.asistencia.obtenerAsistenciaDesdeQR(datosQR)
+      const navigationExtras: NavigationExtras = {
+        state: {
+          usuario: this.usuario,
+          asistencia: this.asistencia
+        }
+      };
+      this.router.navigate(['/home/mi-clase'], navigationExtras);
+    } else if (this.asistencia.verificarAsistenciaDesdeQR(datosQR) == false) {
       showAlertDUOC('El código QR escaneado no corresponde a una Asistencia de DUOC');
     }
   }
